@@ -89,4 +89,26 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+export const refreshToken = async (req: Request, res: Response) => {
+  const { refreshToken } = req.body;
 
+  try {
+    if (!refreshToken) {
+      return res.status(401).json({ error: "Refresh token requerido" });
+    }
+
+    // Verificar el refresh token
+    const decoded = verifyRefreshToken(refreshToken) as { userId: string };
+    if (!decoded) {
+      return res.status(403).json({ error: "Refresh token inválido" });
+    }
+
+    // Generar un nuevo token
+    const newToken = generateToken(decoded.userId);
+    res.status(200).json({ token: newToken });
+  
+  } catch (error) {
+    console.error("Error al refrescar el token:", error);
+    res.status(500).json({ error: "Error al refrescar el token" });
+  }
+};
