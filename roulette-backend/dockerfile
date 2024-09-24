@@ -1,0 +1,22 @@
+
+# Usa una imagen base de Node.js
+FROM node:18-alpine
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia los archivos del package.json e instala las dependencias
+COPY package.json ./
+COPY prisma ./prisma/
+COPY . .
+
+RUN npm install
+
+# Genera el cliente Prisma
+RUN npx prisma generate
+
+# Expone el puerto que tu app utiliza
+EXPOSE 3001
+
+# Instrucción de inicio
+CMD ["npm", "run", "dev:ts"]

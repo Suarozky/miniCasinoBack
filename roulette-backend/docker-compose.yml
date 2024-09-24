@@ -1,0 +1,37 @@
+services:
+  database:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ssuareznnavarro
+      POSTGRES_DB: miniCasino
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:ssuareznnavarro@database:5432/miniCasino?schema=public
+    depends_on:
+      - database
+    ports:
+      - "3001:3001"
+    volumes:
+      - .:/app
+    command: npm run dev:ts 
+    working_dir: /app
+    stdin_open: true
+    tty: true
+
+  migration:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://postgres:ssuareznnavarro@database:5432/miniCasino?schema=public
+    depends_on:
+      - database
+    command: npx prisma migrate deploy
+
+volumes:
+  postgres_data:
