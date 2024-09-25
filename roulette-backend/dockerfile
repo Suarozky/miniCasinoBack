@@ -20,4 +20,3 @@ EXPOSE 3001
 
 # Instrucción de inicio
 CMD ["npm", "run", "dev:ts"]
-
