@@ -13,16 +13,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up SSH agent
-      uses: webfactory/ssh-agent@v0.5.3
+    - name: Deploy Stack
+      uses: appleboy/ssh-action@v1.0.3
       with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    - name: Deploy to remote server
-      run: |
-        ssh -o StrictHostKeyChecking=no 3.139.139.13 '
+        host: ${{secrets.HOST}}
+        username: ${{secrets.USER}}
+        key: ${{secrets.SSH_PRIVATE_KEY}}
+        script: |
+          #!/bin/bash
           cd miniCasinoBack/roulette-backend &&
           docker-compose down &&
           git pull origin main &&
           docker-compose up -d
-        '
